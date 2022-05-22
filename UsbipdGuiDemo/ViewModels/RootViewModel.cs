@@ -14,7 +14,7 @@ namespace UsbipdGuiDemo.ViewModels
     public class RootViewModel : PropertyChangedBase
     {
         private string lastAttachedDevice = null;
-        private string _title = "Usbipd Demo";
+        private string _title = "gui for usbipd-win";
         public string Title
         {
             get { return _title; }
@@ -59,11 +59,14 @@ namespace UsbipdGuiDemo.ViewModels
             {
                 
                 string line = listProcess.StandardOutput.ReadLine();
-                var line_item = line.Split("    ");
                 if (line.Contains("GUID"))
                 {
                     break;
                 }
+
+                line = line.Replace("   ", "  ");
+                var line_item = line.Split("  ");
+
 
                 if (line_item[0].Contains('-'))
                 {
@@ -79,8 +82,8 @@ namespace UsbipdGuiDemo.ViewModels
                         DEVICE.Add(new DeviceModel
                         {
                             BUSID = line_item[0],
-                            VIDPID = line_item[1].Split("  ")[0],
-                            DEVICE_NAME = line_item[1].Split("  ")[1],
+                            VIDPID = line_item[1],
+                            DEVICE_NAME = line_item[2],
                             STATE = line_item[^1].Trim(),
                             IsExits = true
                         });
@@ -90,8 +93,8 @@ namespace UsbipdGuiDemo.ViewModels
                         var device = DEVICE.FirstOrDefault(device => device.BUSID == line_item[0]);
                         if (device != null)
                         {
-                            device.VIDPID = line_item[1].Split("  ")[0];
-                            device.DEVICE_NAME = line_item[1].Split("  ")[1];
+                            device.VIDPID = line_item[1];
+                            device.DEVICE_NAME = line_item[2];
                             device.STATE = line_item[^1].Trim();
                             device.IsExits = true;
                         }
